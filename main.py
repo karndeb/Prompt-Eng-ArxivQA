@@ -1,24 +1,23 @@
 """Python file to serve as the frontend"""
 import streamlit as st
 from streamlit_chat import message
-import faiss
 from langchain import OpenAI
 from langchain.chains import VectorDBQAWithSourcesChain
 import pickle
 
 # Load the LangChain.
-index = faiss.read_index("docs.index")
+openapi_key = ''
 
-with open("faiss_store.pkl", "rb") as f:
+with open("Faiss_Index/faiss_index_aiml.pickle", "rb") as f:
     store = pickle.load(f)
 
-store.index = index
-chain = VectorDBQAWithSourcesChain.from_llm(llm=OpenAI(temperature=0), vectorstore=store)
+# store.index = index
+chain = VectorDBQAWithSourcesChain.from_llm(llm=OpenAI(temperature=0, openai_api_key=openapi_key), vectorstore=store)
 
 
 # From here down is all the StreamLit UI.
-st.set_page_config(page_title="Blendle Notion QA Bot", page_icon=":robot:")
-st.header("Blendle Notion QA Bot")
+st.set_page_config(page_title="Arxiv QA Bot", page_icon=":robot:")
+st.header("Arxiv QA Bot")
 
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
@@ -28,7 +27,7 @@ if "past" not in st.session_state:
 
 
 def get_text():
-    input_text = st.text_input("You: ", "Hello, how are you?", key="input")
+    input_text = st.text_input("You: ", "What does the duration predictor do?", key="input")
     return input_text
 
 
